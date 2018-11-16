@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.sicau.thomas.mapper.FilesMapper">
+	<!--//将文件信息写入数据库 int insertFiles(Files files); -->
+	<insert id="insertFiles" useGeneratedKeys="true">
+		INSERT INTO `file` (
+
+		`file_name`,
+		`file_description`,
+		`upload_ip`,
+		`upload_time`,
+		`upload_user_name`
+
+		)
+		VALUES
+		(
+
+		#{fileName},
+		#{fileDescription},
+		#{uploadIp},
+		#{uploadTime},
+		#{uploadUserName}
+
+		);
+
+
+	</insert>
+
+
+	<!--查询总记录数 int totalCount(); -->
+	<select id="totalCount" resultType="int" parameterType="cn.edu.sicau.thomas.pojo.QueryBean">
+		SELECT COUNT(*)
+		FROM FILE a LEFT JOIN USER b ON
+		a.`upload_user_name`=b.`user_name`
+		<where>
+			<if test="fileName!=null and fileName!=''">
+				and `file_name` LIKE '%${fileName}%'
+			</if>
+			<if test="groupName !=null and groupName!=''">
+				and group_name=#{groupName}
+			</if>
+		</where>
+
+	</select>
+
+	<!-- //查询小组名 List<String> findGroupName(); -->
+	<select id="findGroupName" resultType="String">
+		SELECT
+		DISTINCT
+		`group_name`
+		FROM
+		`user`
+	</select>
+	<!-- //根据搜索查询并分页文件信息 List<FileInfor> findFilesPage(QueryBean queryBean); -->
+	<select id="findFilesPage"
+		resultType="cn.edu.sicau.thomas.pojo.FileInfor">
+
+		SELECT a.`id`,
+		b.`group_name`,a.`file_name`,a.`upload_ip`,a.`upload_user_name`,a.`upload_time`,a.`update_time`,a.`page_view`
+		FROM FILE a LEFT JOIN USER b ON a.`upload_user_name`=b.`user_name`
+		
+		
+		<where>
+			<if test="fileName!=null and fileName!=''">
+				and `file_name` LIKE '%${fileName}%'
+			</if>
+			<if test="groupName !=null and groupName!=''">
+				and group_name=#{groupName}
+			</if>
+		</where>
+		ORDER BY  `update_time` DESC
+		LIMIT #{currentRow},#{pageSize}
+		
+	</select>
+	<!-- //根据id获得文件信息 FileInfor getFileInfoById(Integer id); -->
+	<select id="getFileInfoById"
+		resultType="cn.edu.sicau.thomas.pojo.FileInfor">
+		SELECT a.`id`,
+		a.`file_description`,b.`group_name`,a.`file_name`,a.`upload_ip`,a.`upload_user_name`
+		FROM FILE a LEFT JOIN USER b ON a.`upload_user_name`=b.`user_name`
+		WHERE a.id = #{id}
+	</select>
+	<!-- //更新文件信息 int updateFileInfo(Files files); -->
+	<update id="updateFileInfo">
+
+
+		UPDATE
+		`file`
+		SET
+
+		`file_name` = #{fileName},
+		`file_description` =#{fileDescription}
+
+		WHERE `id` = #{id}
+
+	</update>
+	<!-- //删除文件信息 int deleteFileInfo(Integer id); -->
+	<delete id="deleteFileInfo" parameterType="int">
+		DELETE
+		FROM
+		`file`
+		WHERE `id` =#{id};
+
+	</delete>
+	<!-- //更新文件浏览数
+	int updatePageView(Integer id); -->
+	<update id="updatePageView" >
+	UPDATE
+		`file`
+		SET
+
+		page_view = page_view+1
+
+		WHERE `id` = #{id}
+	
+	</update>
+</mapper>
+

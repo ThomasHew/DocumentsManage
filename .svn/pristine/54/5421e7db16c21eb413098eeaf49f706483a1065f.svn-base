@@ -1,0 +1,120 @@
+/**
+ * 
+ */
+package cn.edu.sicau.thomas.controller;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.portlet.ModelAndView;
+
+import cn.edu.sicau.thomas.pojo.User;
+import cn.edu.sicau.thomas.service.UserService;
+
+/**
+ * @author lenovo
+ *
+ */
+@Controller
+@RequestMapping("user")
+public class UserController {
+	@Autowired
+	private UserService userService;
+
+	@RequestMapping("toLogin")
+	public String toLogin() {
+		return "login";
+	}
+//登录
+	@RequestMapping("login")
+	public String login(String autologin, String userName, String password, Model model, HttpServletRequest request,HttpServletResponse response) {
+
+		User user = userService.findUserByNameAndPassword(userName, password);
+		if (user != null) {
+			//如果auto的值不为空，即选择了自动登录
+			if (autologin!=null) {
+				//设置自动登录时间60s
+				int time = 60;
+				//保存在cookie中
+				Cookie cookie = new Cookie("user", user.getUserName()+"=="+user.getPassword());
+				
+				cookie.setMaxAge(time);
+				response.addCookie(cookie);
+				
+			}
+			
+			
+			
+			
+			request.getSession().setAttribute("user", user);
+			return "success";
+		}else {
+			String msg = "用户名或密码错误，请重新输入！";
+			request.setAttribute("msg", msg);
+			return "login";
+		}
+
+	}
+	
+	//自动登录
+	@RequestMapping("success")
+	public String success(HttpServletRequest request, HttpServletResponse response) {
+		
+	Cookie[] cookie=request.getCookies();
+	String[] cookies = null;
+	if (cookie!=null) {
+		for (int i = 0; i < cookie.length; i++) {
+			Cookie c = cookie[i];
+			String usercookie = c.getValue();
+			cookies = usercookie.split("==");
+			if (cookies.length==2) {
+				String userName = cookies[0];
+				String password = cookies[1];
+				
+				//实现自动登录
+				User user2 = userService.findUserByNameAndPassword(userName, password);
+				if (user2!=null) {
+					request.getSession().setAttribute("user", user2);
+					return "success";
+				}
+			}
+			
+		}
+	}
+	return 	"redirect:toLogin.do";
+
+		
+	}
+	//注册
+	@RequestMapping("/toregister")
+	public String toregister() {
+		return "register";
+	}
+	@RequestMapping("/register")
+	public String register(User user) {
+		Integer i = userService.insertUser(user);
+		if (i!=null) {
+			return "resuccess";
+		}
+		return null;
+		
+		
+	}
+	
+	@RequestMapping("queryByUser")
+	public @ResponseBody User  queryByUser(String userName) {
+	System.out.println(userName);
+	return userService.getUserByUserName(userName);
+	
+		
+	}
+	
+}

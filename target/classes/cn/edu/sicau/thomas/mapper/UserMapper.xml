@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.sicau.thomas.mapper.UserMapper">
+	<!-- 查找用户（按用户名和密码） User findUserByNameAndPassword(String userName,String 
+		password); -->
+	<select id="findUserByNameAndPassword"
+		resultType="cn.edu.sicau.thomas.pojo.User" parameterType="String">
+		SELECT
+		id,user_name as userName,password,major_class as majorClass,
+		telephone,
+		group_name as groupName
+		FROM
+		`user` where user_name=#{userName} and
+		password=#{password}
+	</select>
+	<!-- //添加用户 void insertUser(User user); -->
+	<insert id="insertUser" useGeneratedKeys="true" parameterType="cn.edu.sicau.thomas.pojo.User">
+		INSERT INTO `user` (
+		
+		`user_name`,
+		`password`,
+		`major_class`,
+		`telephone`,
+		`group_name`
+		)
+		VALUES
+		(
+	
+		#{userName},
+		#{password},
+		#{majorClass},
+		#{telephone},
+		#{groupName}
+		);
+
+	</insert>
+<!--	//根据用户名查询
+	User getUserByUserName(String userName);  -->
+	<select id="getUserByUserName" resultType="cn.edu.sicau.thomas.pojo.User">
+		SELECT
+		id,user_name as userName,password,major_class as majorClass,
+		telephone,
+		group_name as groupName
+		FROM
+		`user` where user_name=#{userName}
+	</select>
+	<!-- //查找小组名称
+	List<String> getGroupName(); -->
+	<select id="getGroupName" resultType="String">
+	SELECT
+ 	 DISTINCT  `group_name`
+	FROM
+  `user`
+	
+	
+	</select>
+
+</mapper>
+
