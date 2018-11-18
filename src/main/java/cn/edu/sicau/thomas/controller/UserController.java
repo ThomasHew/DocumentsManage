@@ -140,9 +140,8 @@ public class UserController {
 
 	//文件上传页面
 	@RequestMapping("upload_file")
-	public String lay2(Model model) {
-		List<String> groupName = userService.getGroupName();
-		model.addAttribute("groupName",groupName);
+	public String lay2(HttpServletRequest request) {
+	
 		return "upload_file";
 	}
 	

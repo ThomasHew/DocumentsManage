@@ -20,7 +20,6 @@ public interface UserService {
 
 	// 根据用户名查询
 	User getUserByUserName(String userName);
-	//查找小组名称
-	List<String> getGroupName();
+	
 	
 }

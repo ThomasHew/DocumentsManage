@@ -94,7 +94,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		`file_description` =#{fileDescription}
 
 		WHERE `id` = #{id}
-
 	</update>
 	<!-- //删除文件信息 int deleteFileInfo(Integer id); -->
 	<delete id="deleteFileInfo" parameterType="int">

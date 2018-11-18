@@ -32,11 +32,11 @@
 							auctor odio.</p>
 						<ul class="social_section_1info">
 							<li><a href="#" class="w3_facebook"><i
-									class="fa fa-facebook"></i></a></li>
+									class="fa fa-wechat"></i></a></li>
 							<li><a href="#" class="w3_twitter"><i
 									class="fa fa-twitter"></i></a></li>
 							<li><a href="#" class="w3_instagram"><i
-									class="fa fa-instagram"></i></a></li>
+									class="fa fa-qq"></i></a></li>
 							<li><a href="#" class="w3_google"><i
 									class="fa fa-google-plus"></i></a></li>
 							<li><a href="#" class="w3_pinterest"><i

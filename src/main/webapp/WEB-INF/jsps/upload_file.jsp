@@ -38,7 +38,8 @@
 </head>
 
 <body>
-
+<script type="text/javascript" src="/DocumentsManage/js/register.js"></script>
+<script type="text/javascript" src="/DocumentsManage/js/jquery.js"></script>
 	<div id="wrapper">
 
 		<!-- Navigation -->
@@ -58,7 +59,7 @@
 		<ul class="nav navbar-top-links navbar-right">
 		欢迎你：${user.userName }
 			<li class="dropdown"><a class="dropdown-toggle"
-				data-toggle="dropdown" href="#"> <i class="fa fa-envelope fa-fw"></i>
+				data-toggle="dropdown" href="#"> <i class="fa fa-user "></i>
 					<i class="fa fa-caret-down"></i>
 			</a>
 
@@ -77,14 +78,7 @@
 			<div class="sidebar-nav navbar-collapse">
 				<ul class="nav" id="side-menu">
 					<li class="sidebar-search">
-						<div class="input-group custom-search-form">
-							<input type="text" class="form-control" placeholder="查询内容...">
-								<span class="input-group-btn">
-									<button class="btn btn-default" type="button">
-										<i class="fa fa-search" style="padding: 3px 0 3px 0;"></i>
-									</button>
-							</span>
-						</div> <!-- /input-group -->
+						
 					</li>
 					<li><a
 						href="${pageContext.request.contextPath}/user/toindex.do"
@@ -97,45 +91,44 @@
 						class="active"><i class="fa fa-dashboard fa-fw"></i> 资料上传</a></li>
 				</ul>
 			</div>
-			<!-- /.sidebar-collapse -->
+			
 		</div>
-		<!-- /.navbar-static-side --> </nav>
+</nav>
 
 		<div id="page-wrapper">
 			<div class="row">
 				<div class="col-lg-12">
 					<h1 class="page-header">资料上传</h1>
 				</div>
-					<form action="${pageContext.request.contextPath}/file/uploadFile.do"  method="post" enctype="multipart/form-data">
+					<form action="${pageContext.request.contextPath}/file/uploadFile.do"  method="post" onsubmit="return CheckAll()"enctype="multipart/form-data" >
 				 <div>
                     <div class="form-group">
                         <label class="control-label">资料名称</label>
-                        <input class="form-control" type="text" name="fileName" placeholder="请输入资料名称" />
+                        <input class="form-control"  type="text" id="fileName" name="fileName" placeholder="请输入资料名称" onblur="checkfileName()"  />
+                        <span id="fileNameSpan" style="color: red; font-style:italic;"></span>	
                     </div>
                     <div class="form-group">
                         <label class="control-label">上传人</label>
-                        <input class="form-control" type="text" value="${user.userName }" placeholder="" />
+                        <input class="form-control" readonly="readonly" type="text" value="${user.userName }" placeholder="" />
                     </div>
                     <div class="form-group">
-                      <label for="customerFrom">小组名称</label> 
-							<select	class="form-control" id="customerFrom" placeholder="小组名称" name="gruopName">
-								<option value="">--请选择--</option>
-								<c:forEach items="${groupName}" var="item">
-									<option value="${item}" <c:if test="${item== gruopName}"> selected</c:if>>${item}</option>
-								</c:forEach>
-							</select>
+                      
+							<label class="control-label">小组名称</label>
+                        <input class="form-control" readonly="readonly" type="text" value="${user.groupName }" placeholder="" />
                     </div>
                      <div class="form-group">
                         <label class="control-label">资料简介</label>
-                     	<textarea rows="3" cols="80" name="fileDescription"></textarea>
+                     	<textarea placeholder="请输入资料简介"  rows="3" cols="80" id="fileDescription" name="fileDescription" onblur="checkfileDescription()" ></textarea>
+                     	 <span id="fileDescriptionSpan" style="color: red; font-style:italic"></span>	
                     </div>
                     <div class="form-group">
-                        <label class="control-label">上传附件</label>
-                     	<input  type="file" name="file" value="附件名"/>
+                        <label class="control-label">上传附件</label><span >(文件最大不超过10m)</span>
+                     	<input  type="file" id="file"  onblur="checkfile()" name="file" value="附件名"/>
+                     	 <span id="fileSpan" style="color: red;"></span>	
                     </div>
                     
                     <div class="form-group">
-                        <button type="submit" class="btn btn-default" >提交</button>
+                        <button type="submit" class="btn btn-default" ">提交</button>
                     </div>
                 </div>
 			</form>
@@ -154,7 +147,6 @@
 
 	<!-- Bootstrap Core JavaScript -->
 	<script src="<%=basePath%>js/bootstrap.min.js"></script>
-
 	<!-- Metis Menu Plugin JavaScript -->
 	<script src="<%=basePath%>js/metisMenu.min.js"></script>
 
@@ -164,7 +156,60 @@
 
 	<!-- Custom Theme JavaScript -->
 	<script src="<%=basePath%>js/sb-admin-2.js"></script>
+	<script type="text/javascript">
+	function checkfileName() {
+		var fileName = $("#fileName").val();
+		var spanNode = document.getElementById("fileNameSpan");
+		if (fileName.replace(/^ +| +$/g, '') == '') {
+			document.getElementById('fileNameSpan').innerHTML = "资料名不能为空！"
+			return false;
+		}else {
+			spanNode.innerHTML = "";
+			return true;
+		}
 
+	}
+	function doSubmit(){
+		var file =  document.getElementById('file'); 
+		if(file.value == ""){
+			alert("请选择您需要上传的文件！"); 
+			
+		}else {
+			return true;
+		}
+		
+	}
+	
+	function checkfileDescription() {
+		var fileDescription = $("#fileDescription").val();
+		var spanNode = document.getElementById("fileDescriptionSpan");
+		if (fileDescription.replace(/^ +| +$/g, '') == '') {
+			document.getElementById('fileDescriptionSpan').innerHTML = "资料描述不能为空！"
+			return false;
+		}else {
+			spanNode.innerHTML = "";
+			return true;
+		}
+
+	}
+	
+	
+	
+	 function CheckAll() {
+		
+		 var fileName =  checkfileName();
+		 var Submit = doSubmit();
+		 var fileDescription = checkfileDescription();
+		if(fileName&&Submit&&fileDescription){
+			return true;
+		}else {
+			return false;
+		}
+	} 
+	
+	
+	</script>
+	
 
 </body>
 

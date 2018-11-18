@@ -46,16 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM
 		`user` where user_name=#{userName}
 	</select>
-	<!-- //查找小组名称
-	List<String> getGroupName(); -->
-	<select id="getGroupName" resultType="String">
-	SELECT
- 	 DISTINCT  `group_name`
-	FROM
-  `user`
 	
-	
-	</select>
 
 </mapper>
 

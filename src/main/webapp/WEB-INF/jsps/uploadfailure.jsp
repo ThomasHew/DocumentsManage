@@ -12,33 +12,29 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="">
-<meta name="author" content="">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+			<meta name="description" content="">
+				<meta name="author" content="">
 
-<title>资料管理平台</title>
+					<title>资料管理平台</title> <!-- Bootstrap Core CSS -->
+					<link href="<%=basePath%>css/bootstrap.min.css" rel="stylesheet">
 
-<!-- Bootstrap Core CSS -->
-<link href="<%=basePath%>css/bootstrap.min.css" rel="stylesheet">
+						<!-- MetisMenu CSS -->
+						<link href="<%=basePath%>css/metisMenu.min.css" rel="stylesheet">
 
-<!-- MetisMenu CSS -->
-<link href="<%=basePath%>css/metisMenu.min.css" rel="stylesheet">
+							<!-- DataTables CSS -->
+							<link href="<%=basePath%>css/dataTables.bootstrap.css"
+								rel="stylesheet">
 
-<!-- DataTables CSS -->
-<link href="<%=basePath%>css/dataTables.bootstrap.css" rel="stylesheet">
+								<!-- Custom CSS -->
+								<link href="<%=basePath%>css/sb-admin-2.css" rel="stylesheet">
 
-<!-- Custom CSS -->
-<link href="<%=basePath%>css/sb-admin-2.css" rel="stylesheet">
-
-<!-- Custom Fonts -->
-<link href="<%=basePath%>css/font-awesome.min.css" rel="stylesheet"
-	type="text/css">
-<link href="<%=basePath%>css/boot-crm.css" rel="stylesheet"
-	type="text/css">
-
-
-
+									<!-- Custom Fonts -->
+									<link href="<%=basePath%>css/font-awesome.min.css"
+										rel="stylesheet" type="text/css">
+										<link href="<%=basePath%>css/boot-crm.css" rel="stylesheet"
+											type="text/css">
 </head>
 
 <body>
@@ -60,9 +56,9 @@
 		<!-- /.navbar-header -->
 
 		<ul class="nav navbar-top-links navbar-right">
-			欢迎你：${user.userName }
+		欢迎你：${user.userName }
 			<li class="dropdown"><a class="dropdown-toggle"
-				data-toggle="dropdown" href="#"> <i class="fa  fa-user" ></i>
+				data-toggle="dropdown" href="#"> <i class="fa fa-user "></i>
 					<i class="fa fa-caret-down"></i>
 			</a>
 
@@ -70,23 +66,25 @@
 					<li><a href="#"><i class="fa fa-user fa-fw"></i> 用户设置</a></li>
 					<li><a href="#"><i class="fa fa-gear fa-fw"></i> 系统设置</a></li>
 					<li class="divider"></li>
-					<li><a
-						href="${pageContext.request.contextPath}/user/loginout.do"><i
-							class="fa fa-sign-out fa-fw"></i> 退出登录</a></li>
+					<li><a href="${pageContext.request.contextPath}/user/loginout.do"><i class="fa fa-sign-out fa-fw"></i>
+							退出登录</a></li>
 				</ul> <!-- /.dropdown-user --></li>
-
+			<!-- /.dropdown -->
 		</ul>
-
-
-
-
 		<!-- /.navbar-top-links -->
 
 		<div class="navbar-default sidebar" role="navigation">
 			<div class="sidebar-nav navbar-collapse">
 				<ul class="nav" id="side-menu">
 					<li class="sidebar-search">
-						
+						<div class="input-group custom-search-form">
+							<input type="text" class="form-control" placeholder="查询内容...">
+								<span class="input-group-btn">
+									<button class="btn btn-default" type="button">
+										<i class="fa fa-search" style="padding: 3px 0 3px 0;"></i>
+									</button>
+							</span>
+						</div> <!-- /input-group -->
 					</li>
 					<li><a
 						href="${pageContext.request.contextPath}/user/toindex.do"
@@ -106,14 +104,19 @@
 		<div id="page-wrapper">
 			<div class="row">
 				<div class="col-lg-12">
-					<h1 class="page-header">欢迎来到资料管理平台！</h1>
+					<h1 class="page-header">资料上传失败！</h1>
+					
 				</div>
 					
 			</div>
-			<!-- /.row -->
-			
-			
-	
+		
+		</div>
+		
+		<!-- /#page-wrapper -->
+
+	</div>
+
+	<!-- /#wrapper -->
 
 	<!-- jQuery -->
 	<script src="<%=basePath%>js/jquery.min.js"></script>
@@ -131,43 +134,6 @@
 	<!-- Custom Theme JavaScript -->
 	<script src="<%=basePath%>js/sb-admin-2.js"></script>
 
-	<script type="text/javascript">
-		function editCustomer(id) {
-			$.ajax({
-				type:"get",
-				url:"<%=basePath%>customer/edit.action",
-				data:{"id":id},
-				success:function(data) {
-					$("#edit_cust_id").val(data.cust_id);
-					$("#edit_customerName").val(data.cust_name);
-					$("#edit_customerFrom").val(data.cust_source)
-					$("#edit_custIndustry").val(data.cust_industry)
-					$("#edit_custLevel").val(data.cust_level)
-					$("#edit_linkMan").val(data.cust_linkman);
-					$("#edit_phone").val(data.cust_phone);
-					$("#edit_mobile").val(data.cust_mobile);
-					$("#edit_zipcode").val(data.cust_zipcode);
-					$("#edit_address").val(data.cust_address);
-					
-				}
-			});
-		}
-		function updateCustomer() {
-			$.post("<%=basePath%>customer/update.action",$("#edit_customer_form").serialize(),function(data){
-				alert("客户信息更新成功！");
-				window.location.reload();
-			});
-		}
-		
-		function deleteCustomer(id) {
-			if(confirm('确实要删除该客户吗?')) {
-				$.post("<%=basePath%>customer/delete.action",{"id":id},function(data){
-					alert("客户删除更新成功！");
-					window.location.reload();
-				});
-			}
-		}
-	</script>
 
 </body>
 

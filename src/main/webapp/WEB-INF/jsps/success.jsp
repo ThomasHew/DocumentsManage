@@ -58,7 +58,7 @@
 		<ul class="nav navbar-top-links navbar-right">
 		欢迎你：${user.userName }
 			<li class="dropdown"><a class="dropdown-toggle"
-				data-toggle="dropdown" href="#"> <i class="fa fa-envelope fa-fw"></i>
+				data-toggle="dropdown" href="#"> <i class="fa fa-user "></i>
 					<i class="fa fa-caret-down"></i>
 			</a>
 

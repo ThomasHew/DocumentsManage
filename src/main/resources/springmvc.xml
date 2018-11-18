@@ -11,27 +11,42 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
-		<context:component-scan base-package="cn.edu.sicau.thomas"></context:component-scan>
-		<mvc:annotation-driven>
-	
-		<!-- 解决@ResponseBody中文乱码 -->
-		 <mvc:message-converters>
-            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
-                <constructor-arg value="UTF-8" />
-            </bean>
-        </mvc:message-converters>
+	<context:component-scan
+		base-package="cn.edu.sicau.thomas"></context:component-scan>
+	<mvc:annotation-driven>
 
+		<!-- 解决@ResponseBody中文乱码 -->
+		<mvc:message-converters>
+			<bean
+				class="org.springframework.http.converter.StringHttpMessageConverter">
+				<constructor-arg value="UTF-8" />
+			</bean>
+		</mvc:message-converters>
 		
-		</mvc:annotation-driven>
-		<!-- 文件上传解析器 上传最大值=1024*1024*10-->
-		<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	</mvc:annotation-driven>
+	<!--配置拦截器, 多个拦截器,顺序执行 -->
+	<mvc:interceptors>
+	<mvc:interceptor>
+	<!--mvc:exclude-mapping path 必须在mvc:mapping path之后-->
+	<mvc:mapping path="/**"/>
+	<mvc:exclude-mapping path="/user/toLogin.do"/>
+	<mvc:exclude-mapping path="/user/toregister.do"/>
+	<mvc:exclude-mapping path="/user/login.do"/>
+	<bean class="cn.edu.sicau.thomas.interceptor.MyInterceptor"></bean>
+	</mvc:interceptor>
+	<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"></bean>
+	
+	</mvc:interceptors>
+	<!-- 文件上传解析器 上传最大值=1024*1024*10 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<property name="maxUploadSize" value="10485760"></property>
-		
-		</bean>
-		<!-- 创建视图解析器 -->
-		<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-			<property name="prefix" value="/WEB-INF/jsps/"></property>
-			<property name="suffix" value=".jsp"></property>
-		
-		</bean>
+
+	</bean>
+	<!-- 创建视图解析器 -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsps/"></property>
+		<property name="suffix" value=".jsp"></property>
+
+	</bean>
 </beans>

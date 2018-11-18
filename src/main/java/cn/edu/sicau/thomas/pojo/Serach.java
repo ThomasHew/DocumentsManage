@@ -22,6 +22,10 @@ public class Serach {
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
 	}
+	@Override
+	public String toString() {
+		return "Serach [fileName=" + fileName + ", groupName=" + groupName + "]";
+	}
 	
 	
 }

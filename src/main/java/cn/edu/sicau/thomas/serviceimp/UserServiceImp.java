@@ -40,13 +40,5 @@ public class UserServiceImp implements UserService {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see cn.edu.sicau.thomas.service.UserService#getGroupName()
-	 */
-	@Override
-	public List<String> getGroupName() {
-		
-		return userMapper.getGroupName();
-	}
-
+	
 }

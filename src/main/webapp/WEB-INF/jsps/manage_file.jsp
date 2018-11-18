@@ -62,7 +62,7 @@
 		<ul class="nav navbar-top-links navbar-right">
 			欢迎你：${user.userName }
 			<li class="dropdown"><a class="dropdown-toggle"
-				data-toggle="dropdown" href="#"> <i class="fa fa-envelope fa-fw"></i>
+				data-toggle="dropdown" href="#"> <i class="fa fa-user "></i>
 					<i class="fa fa-caret-down"></i>
 			</a>
 
@@ -77,23 +77,13 @@
 
 		</ul>
 
-
-
-
 		<!-- /.navbar-top-links -->
 
 		<div class="navbar-default sidebar" role="navigation">
 			<div class="sidebar-nav navbar-collapse">
 				<ul class="nav" id="side-menu">
 					<li class="sidebar-search">
-						<div class="input-group custom-search-form">
-							<input type="text" class="form-control" placeholder="查询内容...">
-							<span class="input-group-btn">
-								<button class="btn btn-default" type="button">
-									<i class="fa fa-search" style="padding: 3px 0 3px 0;"></i>
-								</button>
-							</span>
-						</div> <!-- /input-group -->
+						
 					</li>
 					<li><a
 						href="${pageContext.request.contextPath}/user/toindex.do"
@@ -126,14 +116,14 @@
 
 						<div class="form-group">
 							<label for="customerFrom">文件名称</label>
-							<input type="text" class="form-control" placeholder="请输入需要查找的文件名" name="fileName" value=""/>
+							<input type="text" class="form-control" placeholder="请输入需要查找的文件名"  name="fileName" />
 						</div>
 						<div class="form-group">
 							<label for="custIndustry">小组名称</label> <select
-								class="form-control" id="custIndustry" name="groupName">
+								class="form-control"  name="groupName">
 								<option value="">--请选择--</option>
 								<c:forEach items="${groupName}" var="item">
-									<option value="${item}" ${item == groupName? "selected" : ""} >${item}</option>
+									<option value="${item}"  >${item}</option>
 								</c:forEach>
 							</select>
 						</div>
@@ -179,7 +169,7 @@
 											>下载</a>
 											<a href="#"
 											class="btn btn-danger btn-xs"
-											onclick="deleteCustomer(${files.id})">删除</a></td>
+											onclick="deleteCustomer('${files.id}','${user.userName }','${files.uploadUserName}')">删除</a></td>
 									</tr>
 								</c:forEach>
 							</tbody>
@@ -188,7 +178,7 @@
 							<ul class="pagination">
 								<li><a href="#">&laquo;</a></li>
 							
-								<li >	<a href="${pageContext.request.contextPath  }/file/manage_file.do?currentPage=${pb.currentPage==1?1:pb.currentPage-1}">上一页</a></a></li>
+								<li >	<a href="${pageContext.request.contextPath  }/file/manage_file.do?currentPage=${pb.currentPage==1?1:pb.currentPage-1}">上一页</a></li>
 								
 								<li><a href="#">第${pb.currentPage}页</a></li>
 								<li><a href="#">共${pb.totalPageCount} 页</a></li>
@@ -231,9 +221,9 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="edit_linkMan" class="col-sm-2 control-label">资料名称</label>
+								<label for="edit_linkMan" class="col-sm-2 control-label">资料名称</label>
 							<div class="col-sm-10">
-								<input type="text" class="form-control" id="fileName"
+								<input type="text" readonly="readonly" class="form-control" id="fileName"
 									placeholder="资料名称" name="fileName">
 							</div>
 						</div>
@@ -254,7 +244,7 @@
 							<div class="form-group">
 							<label for="edit_linkMan" class="col-sm-2 control-label">资料简介</label>
 							<div class="col-sm-10">
-								<textarea id="fileDescription" rows="3" cols="60"  name="fileDescription" placeholder="资料简介"></textarea>
+								<textarea id="fileDescription" rows="3" cols="60"  name="fileDescription" ></textarea>
 							</div>
 						</div>
 					</form>
@@ -262,7 +252,7 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 					<button type="button" class="btn btn-primary"
-						onclick="updateCustomer()">保存修改</button>
+						onclick="updateCustomer('${user.userName }')">保存修改</button>
 				</div>
 			</div>
 		</div>
@@ -301,26 +291,36 @@
 				}
 			});
 		}
-		function updateCustomer() {
+		function updateCustomer(userName) {
+			var uploadUserName = document.getElementById("uploadUserName").value;
+			
+			if(userName == uploadUserName){
+				
 			$.post("<%=basePath%>file/update.do",$("#edit_file_form").serialize(),function(data){
 				alert("资料信息更新成功！");
 				window.location.reload();
 			});
-		}
-		
-		function deleteCustomer(id) {
-			if(confirm('确实要删除该资料吗?')) {
-				$.post("<%=basePath%>file/delete.do",{"id":id},function(data){
-					alert("客户删除更新成功！");
-					window.location.reload();
-				});
+			}else {
+				alert("对不起,您没有权限！");
 			}
 		}
 		
-		$(function(){
-			// $("#jumpMenu").val(要选中的option的value值即可);
-			$("#jumpMenu").val(item);
-			});
+		function deleteCustomer(id,userName,uploadUserName) {
+		
+			if(userName == uploadUserName){
+			if(confirm('确实要删除该资料吗?')) {
+				$.post("<%=basePath%>file/delete.do",{"id":id},function(data){
+					alert("资料删除更新成功！");
+					window.location.reload();
+				});
+			}
+			}else {
+				alert("对不起,您没有权限！");
+			}
+		}
+		
+		
+		
 	</script>
 
 </body>

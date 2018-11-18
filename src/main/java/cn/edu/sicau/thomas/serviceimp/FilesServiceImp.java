@@ -75,6 +75,7 @@ public class FilesServiceImp implements FilesService {
 		System.out.println(queryBean.getGroupName());
 		//总记录数
 		Integer totalCount = filesMapper.totalCount(queryBean);
+		System.out.println(totalCount);
 		//总页数
 		int totalPage = (int) Math.ceil(totalCount*1.0/queryBean.getPageSize());
 		System.out.println(totalPage);

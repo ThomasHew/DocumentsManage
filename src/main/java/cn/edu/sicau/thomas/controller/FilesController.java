@@ -24,12 +24,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sun.org.apache.bcel.internal.generic.NEW;
@@ -51,6 +54,7 @@ import cn.edu.sicau.thomas.service.UserService;
  */
 @Controller
 @RequestMapping("file")
+@SessionAttributes("serach")
 public class FilesController {
 	@Autowired
 	private FilesService filesService;
@@ -65,16 +69,16 @@ public class FilesController {
 		try {
 			Date date = new Date();//获得系统时间. 
 			String nowTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
-			Timestamp goodsC_date = Timestamp.valueOf(nowTime);//把时间转换 
+			Timestamp timestamp = Timestamp.valueOf(nowTime);//把时间转换 
 			
-			System.out.println(goodsC_date);
+			System.out.println(timestamp);
 		//获得当前ip
 		String ip = GetIp.getIpAddr(request);
 		// 如果文件不为空，写入上传路径
 		String path = request.getServletContext().getRealPath("/upload");
 		String fileName = file.getOriginalFilename();
 		
-		Files files = new Files(null,fileName, userName,ip,fileDescription,goodsC_date);
+		Files files = new Files(null,fileName, userName,ip,fileDescription,timestamp);
 		File targetFile = new File(path, fileName);
 		if (!targetFile.exists()) {
 			targetFile.mkdirs();
@@ -85,7 +89,7 @@ public class FilesController {
 			file.transferTo(targetFile);
 			
 		} catch (Exception e) {
-			return "uploadfi";
+			return "uploadfailure";
 			
 		}
 			
@@ -110,20 +114,27 @@ public class FilesController {
         return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),    
                 headers, HttpStatus.CREATED);  
      }
-
+	//查询条件
+	 @RequestMapping("condition")
+	 public String condition(Serach serach,ModelMap map) {
+		 map.addAttribute("serach", serach);
+		 return "manage_file";
+	 }
+	 
+	 
 	//分页及查询
-
 	@RequestMapping("manage_file")
-	public String Page(HttpServletRequest request, Model model, QueryBean queryBean,Serach serach) {
+	public String Page(HttpServletRequest request, Model model,ModelMap map, QueryBean queryBean,Serach serach) {
+		
 		List<String> findGroupName = filesService.findGroupName();
 		model.addAttribute("groupName",findGroupName);
-		
-		
-		queryBean.setFileName(serach.getFileName());
-		queryBean.setGroupName(serach.getGroupName());
-		
-		
-		
+		//若session中无serach，将serach放入session
+		if (request.getSession().getAttribute("serach")==null) {
+			request.getSession().setAttribute("serach", serach);
+		}
+		Serach serach1 =(Serach) request.getSession().getAttribute("serach");
+		queryBean.setFileName(serach1.getFileName());
+		queryBean.setGroupName(serach1.getGroupName());
 		Page<FileInfor> pb = filesService.findFilesPage(queryBean);
 		 request.setAttribute("pb", pb);
 	
@@ -136,6 +147,7 @@ public class FilesController {
 	public FileInfor edit(Integer id) {
 		
 		FileInfor fileInfoById = filesService.getFileInfoById(id);
+		System.out.println(fileInfoById.getFileName());
 		return fileInfoById;
 		
 	}
@@ -166,7 +178,7 @@ public class FilesController {
 	//删除文件信息
 	@RequestMapping("delete")
 	@ResponseBody
-	public String delete(Integer id) {
+	public String delete(Integer id,String uploadUserName) {
 		String msg = "1";
 		try {
 			filesService.deleteFileInfo(id);
@@ -180,7 +192,7 @@ public class FilesController {
 	//更新浏览数
 	@RequestMapping("updatepageview")
 	public void updatepageview(Integer id) {
-		System.out.println(id);
+	
 		filesService.updatePageView(id);
 		
 		
